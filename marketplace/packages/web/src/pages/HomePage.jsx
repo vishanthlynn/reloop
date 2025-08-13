@@ -13,6 +13,9 @@ const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -42,6 +45,54 @@ const HomePage = () => {
       toast.error('Failed to load products');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const sampleProducts = [
+    "iPhone 14 Pro", "Samsung Galaxy S23", "MacBook Air M2", "Dell XPS 15",
+    "Sony WH-1000XM5 Headphones", "Bose QuietComfort 45", "Apple Watch Series 8",
+    "Garmin Fenix 7", "Nike Air Max", "Adidas Ultraboost", "Canon EOS R6 Camera",
+    "Sony A7 IV", "LG C2 OLED TV", "Samsung QN90B QLED TV"
+  ];
+
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (query.length > 1) {
+      const filteredSuggestions = sampleProducts.filter(
+        (item) => item.toLowerCase().includes(query.toLowerCase())
+      );
+      setSuggestions(filteredSuggestions);
+      setShowSuggestions(true);
+      setActiveSuggestionIndex(0);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setSearchQuery(suggestion);
+    setShowSuggestions(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (!showSuggestions) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveSuggestionIndex((prevIndex) =>
+        prevIndex < suggestions.length - 1 ? prevIndex + 1 : prevIndex
+      );
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveSuggestionIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : 0
+      );
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (suggestions.length > 0) {
+        handleSuggestionClick(suggestions[activeSuggestionIndex]);
+      }
     }
   };
 
@@ -102,18 +153,48 @@ const HomePage = () => {
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
               <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                type="search"
                 placeholder="What are you looking for today?"
-                className="w-full pl-14 pr-4 py-4 rounded-full text-lg text-gray-800 bg-gray-100 border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                className="w-full pl-14 pr-32 py-4 text-gray-700 bg-gray-100 border-transparent rounded-full focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onKeyDown={handleKeyDown}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
               />
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2.5 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-indigo-600 text-white font-semibold px-8 py-3 rounded-full hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
               >
                 Search
               </button>
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute z-10 left-0 right-0 mt-2">
+                  <ul className="bg-white border border-gray-200 rounded-lg shadow-lg text-left overflow-hidden">
+                    {suggestions.map((suggestion, index) => {
+                      const queryIndex = suggestion.toLowerCase().indexOf(searchQuery.toLowerCase());
+                      const before = suggestion.slice(0, queryIndex);
+                      const match = suggestion.slice(queryIndex, queryIndex + searchQuery.length);
+                      const after = suggestion.slice(queryIndex + searchQuery.length);
+
+                      return (
+                        <li
+                          key={suggestion}
+                          className={`px-5 py-3 cursor-pointer text-gray-600 hover:bg-indigo-50 transition-colors duration-150 ${
+                            index === activeSuggestionIndex ? 'bg-indigo-50' : ''
+                          }`}
+                          onMouseDown={() => handleSuggestionClick(suggestion)}
+                        >
+                          <span>
+                            {before}
+                            <span className="font-semibold text-gray-900">{match}</span>
+                            {after}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
             </div>
           </form>
         </div>

@@ -6,15 +6,19 @@ import { LogIn, Mail, Lock } from 'lucide-react';
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, isLoading, error } = useAuthContext();
+  const { login, isLoggingIn, error } = useAuthContext();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const success = await login({ email, password });
-    if (success) {
-      navigate('/');
-    }
+    login({ email, password }, {
+      onSuccess: () => {
+        navigate('/');
+      },
+      onError: (err) => {
+        console.error(err);
+      }
+    });
   };
 
   return (
@@ -63,11 +67,11 @@ const LoginPage = () => {
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoggingIn}
                 className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition"
               >
-                {isLoading ? 'Signing in...' : 'Sign in'}
-                {!isLoading && <LogIn className="w-5 h-5" />}
+                {isLoggingIn ? 'Signing in...' : 'Sign in'}
+                {!isLoggingIn && <LogIn className="w-5 h-5" />}
               </button>
             </div>
             {error && <p className="mt-2 text-center text-sm text-red-600">{error.message || 'Login failed. Please check your credentials.'}</p>}

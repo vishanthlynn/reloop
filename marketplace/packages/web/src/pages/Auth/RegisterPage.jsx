@@ -5,12 +5,14 @@ import { UserPlus, User, Mail, Lock } from 'lucide-react';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
+    phone: '',
     password: '',
     confirmPassword: '',
   });
-  const { register, isLoading, error } = useAuthContext();
+  const { register, isRegistering, error } = useAuthContext();
   const navigate = useNavigate();
   const [passwordError, setPasswordError] = useState('');
 
@@ -21,18 +23,22 @@ const RegisterPage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setPasswordError('');
     if (formData.password !== formData.confirmPassword) {
       setPasswordError("Passwords don't match!");
       return;
     }
-    const { name, email, password } = formData;
-    const success = await register({ name, email, password });
-    if (success) {
-      navigate('/login');
-    }
+    const { firstName, lastName, email, phone, password } = formData;
+    register({ firstName, lastName, email, phone, password }, {
+      onSuccess: () => {
+        navigate('/login');
+      },
+      onError: (err) => {
+        console.error(err);
+      }
+    });
   };
 
   return (
@@ -43,19 +49,35 @@ const RegisterPage = () => {
           <p className="text-gray-600 mb-8">Join our community and start trading today.</p>
           
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                id="name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                required
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                placeholder="Full Name"
-                value={formData.name}
-                onChange={handleChange}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  autoComplete="given-name"
+                  required
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                  placeholder="First Name"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  autoComplete="family-name"
+                  required
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                  placeholder="Last Name"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -68,6 +90,20 @@ const RegisterPage = () => {
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
                 placeholder="Email address"
                 value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="relative">
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                required
+                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                placeholder="Phone Number"
+                value={formData.phone}
                 onChange={handleChange}
               />
             </div>
@@ -105,11 +141,11 @@ const RegisterPage = () => {
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isRegistering}
                 className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition"
               >
-                {isLoading ? 'Creating account...' : 'Create Account'}
-                {!isLoading && <UserPlus className="w-5 h-5" />}
+                {isRegistering ? 'Creating account...' : 'Create Account'}
+                {!isRegistering && <UserPlus className="w-5 h-5" />}
               </button>
             </div>
             {error && <p className="mt-2 text-center text-sm text-red-600">{error.message || 'Registration failed. Please try again.'}</p>}
