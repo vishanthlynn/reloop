@@ -14,14 +14,15 @@ import {
   getKYCStatus,
   deleteAccount
 } from '../../controllers/user.controller.js';
-import { verifyJWT } from '../../middlewares/auth.middleware.js';
+import authMiddleware from '../../middlewares/auth.middleware.js';
+const { authenticate } = authMiddleware.default || authMiddleware;
 import {
   validateUpdateProfile,
   validateKYC,
   validateMongoId,
   validatePagination
 } from '../../middlewares/validator.middleware.js';
-import { upload } from '../../middlewares/multer.middleware.js';
+import upload from '../../middlewares/multer.middleware.js';
 
 const router = Router();
 
@@ -29,7 +30,7 @@ const router = Router();
 router.get('/seller/:sellerId', validateMongoId('sellerId'), getSellerProfile);
 
 // Protected routes
-router.use(verifyJWT);
+router.use(authenticate);
 
 // Profile management
 router.get('/profile', getUserProfile);

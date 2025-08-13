@@ -1,7 +1,7 @@
 const Product = require('../../models/product.model');
 const ApiError = require('../../utils/ApiError');
 const ApiResponse = require('../../utils/ApiResponse');
-const asyncHandler = require('../../utils/asyncHandler');
+const { asyncHandler } = require('../../utils/asyncHandler');
 const { LISTING_TYPES } = require('../../utils/constants');
 
 const createProduct = asyncHandler(async (req, res) => {

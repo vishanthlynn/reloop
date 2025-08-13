@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const tokenSchema = new mongoose.Schema({
   user: {
@@ -27,4 +27,4 @@ tokenSchema.index({ user: 1, type: 1 });
 tokenSchema.index({ token: 1 });
 tokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-module.exports = mongoose.model('Token', tokenSchema);
+export const Token = mongoose.model('Token', tokenSchema);

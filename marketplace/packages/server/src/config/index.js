@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const config = {
   // Server
   PORT: process.env.PORT || 5000,

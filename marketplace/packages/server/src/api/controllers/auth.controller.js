@@ -1,10 +1,10 @@
-const jwt = require('jsonwebtoken');
-const User = require('../../models/user.model');
-const Token = require('../../models/token.model');
-const ApiError = require('../../utils/ApiError');
-const ApiResponse = require('../../utils/ApiResponse');
-const asyncHandler = require('../../utils/asyncHandler');
-const config = require('../../config');
+import jwt from 'jsonwebtoken';
+import { User } from '../../models/user.model.js';
+import { Token } from '../../models/token.model.js';
+import { ApiError } from '../../utils/ApiError.js';
+import { ApiResponse } from '../../utils/ApiResponse.js';
+import { asyncHandler } from '../../utils/asyncHandler.js';
+import config from '../../config/index.js';
 
 const generateTokens = (userId) => {
   const accessToken = jwt.sign({ id: userId }, config.JWT_SECRET, {
@@ -16,7 +16,7 @@ const generateTokens = (userId) => {
   return { accessToken, refreshToken };
 };
 
-const register = asyncHandler(async (req, res) => {
+export const register = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, phone, password } = req.body;
 
   const existingUser = await User.findOne({
@@ -60,7 +60,7 @@ const register = asyncHandler(async (req, res) => {
   );
 });
 
-const login = asyncHandler(async (req, res) => {
+export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email }).select('+password');
@@ -106,7 +106,7 @@ const login = asyncHandler(async (req, res) => {
   );
 });
 
-const logout = asyncHandler(async (req, res) => {
+export const logout = asyncHandler(async (req, res) => {
   const { refreshToken } = req.body;
   
   if (refreshToken) {
@@ -118,7 +118,7 @@ const logout = asyncHandler(async (req, res) => {
   );
 });
 
-const refreshToken = asyncHandler(async (req, res) => {
+export const refreshToken = asyncHandler(async (req, res) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
@@ -161,9 +161,4 @@ const refreshToken = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = {
-  register,
-  login,
-  logout,
-  refreshToken
-};
+

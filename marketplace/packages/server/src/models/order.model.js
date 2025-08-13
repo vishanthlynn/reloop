@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { ORDER_STATUSES, PAYMENT_METHODS } = require('../utils/constants');
+import mongoose from 'mongoose';
+import { ORDER_STATUSES, PAYMENT_METHODS } from '../utils/constants.js';
 
 const orderSchema = new mongoose.Schema({
   // Order Identification
@@ -258,4 +258,4 @@ orderSchema.set('toJSON', {
   }
 });
 
-module.exports = mongoose.model('Order', orderSchema);
+export const Order = mongoose.model('Order', orderSchema);

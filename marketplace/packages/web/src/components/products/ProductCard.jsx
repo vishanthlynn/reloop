@@ -42,7 +42,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <Link to={`/product/${_id}`} className="block">
         <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden">
           <img
@@ -54,12 +54,12 @@ const ProductCard = ({ product }) => {
         </div>
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {isAuction && (
-            <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-800">
+            <span className="rounded-full bg-red-100 dark:bg-red-900/50 px-3 py-1 text-xs font-semibold text-red-800 dark:text-red-300">
               Auction
             </span>
           )}
           {condition === 'new' && (
-            <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">
+            <span className="rounded-full bg-green-100 dark:bg-green-900/50 px-3 py-1 text-xs font-semibold text-green-800 dark:text-green-300">
               New
             </span>
           )}
@@ -67,14 +67,14 @@ const ProductCard = ({ product }) => {
       </Link>
 
       <div className="flex flex-1 flex-col space-y-3 p-4">
-        <h3 className="text-base font-semibold text-gray-800 hover:text-indigo-600">
+        <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400">
           <Link to={`/product/${_id}`}>
             <span aria-hidden="true" className="absolute inset-0" />
             {title}
           </Link>
         </h3>
         
-        <div className="flex items-center gap-1.5 text-sm text-gray-500">
+        <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
           <MapPin className="h-4 w-4 flex-shrink-0" />
           <span>{location?.city || 'India'}</span>
         </div>
@@ -84,15 +84,15 @@ const ProductCard = ({ product }) => {
             <div>
               {isAuction ? (
                 <>
-                  <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="text-lg font-bold text-gray-900">{formatPrice(currentBid || price)}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Current Bid</p>
+                  <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{formatPrice(currentBid || price)}</p>
                 </>
               ) : (
-                <p className="text-lg font-bold text-gray-900">{formatPrice(price)}</p>
+                <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{formatPrice(price)}</p>
               )}
             </div>
             {isAuction && getTimeRemaining() && (
-              <p className="text-sm font-medium text-red-600">{getTimeRemaining()}</p>
+              <p className="text-sm font-medium text-red-600 dark:text-red-400">{getTimeRemaining()}</p>
             )}
           </div>
 

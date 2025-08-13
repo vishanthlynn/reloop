@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { PRODUCT_CATEGORIES, PRODUCT_CONDITIONS, LISTING_TYPES, AUCTION_STATUSES } = require('../utils/constants');
+import mongoose from 'mongoose';
+import { PRODUCT_CATEGORIES, PRODUCT_CONDITIONS, LISTING_TYPES, AUCTION_STATUSES } from '../utils/constants.js';
 
 const productSchema = new mongoose.Schema({
   // Basic Information
@@ -267,4 +267,4 @@ productSchema.set('toJSON', {
   }
 });
 
-module.exports = mongoose.model('Product', productSchema);
+export const Product = mongoose.model('Product', productSchema);

@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const { USER_ROLES, KYC_STATUS } = require('../utils/constants');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import { USER_ROLES, KYC_STATUS } from '../utils/constants.js';
 
 const userSchema = new mongoose.Schema({
   // Basic Information
@@ -198,4 +198,4 @@ userSchema.set('toJSON', {
   }
 });
 
-module.exports = mongoose.model('User', userSchema);
+export const User = mongoose.model('User', userSchema);
